@@ -3,6 +3,9 @@ import Image from 'next/image'
 import f1GPTLogo from './assets/logo.avif'
 import { useChat } from 'ai/react'
 import { Message } from 'ai'
+import Bubble from './components/Bubble'
+import LoadingBubble from './components/LoadingBubble' 
+import PromptSuggestionRow from './components/PromptSuggestionRow'
 
 const Home = () => {
     const { append, isLoading, messages, input, handleInputChange, handleSubmit } = useChat()
@@ -17,12 +20,12 @@ const Home = () => {
                             Ask me anything about volleyball ^^!
                         </p>
                         <br/>
-                        {/* <PromptSuggestionRow/> */}
+                        <PromptSuggestionRow/>
                     </>
                 ): (
                     <> 
                         {/* {map messages onto text bubbles } */}
-                        {/* { <LoadingBubble/>} */}
+                        { <LoadingBubble/>}
                     </>
                 )}
                 
