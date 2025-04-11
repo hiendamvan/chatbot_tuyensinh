@@ -14,7 +14,7 @@ const Home = () => {
                 {noMessages ? (
                     <>  
                         <p className='starter-text'>
-                            Ask me anything about volleyball!
+                            Ask me anything about volleyball ^^!
                         </p>
                         <br/>
                         {/* <PromptSuggestionRow/> */}
