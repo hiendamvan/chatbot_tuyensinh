@@ -10,12 +10,11 @@ body {
     align-items: center;
     height: 100vh;
     background-image: url("./assets/background.jpg");
-    background-size: cover;
 }
 
 main {
-    width: 60vw;
-    height: 70vh;
+    width: 80vw;
+    height: 80vh;
     background: linear-gradient(to bottom, #f8f8f8, #cfcfcf);
     border-radius: 15px;
     display: flex;
@@ -36,7 +35,7 @@ section.populated {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    overflow: scroll;
+    /* overflow: scroll; */
 }
 
 .starter-text {
@@ -74,6 +73,7 @@ input:focus {
     outline: none;
 }
 
+
 .loader {
     margin: 10px; 
     width: 60px; 
@@ -81,8 +81,26 @@ input:focus {
     background: 
         no-repeat radial-gradient(circle closest-side, #383838 90%, #0000) 0 50%, 
         no-repeat radial-gradient(circle closest-side, #383838 90%, #0000) 50% 50%,
-        no-repeat radial-gradient(circle closest-side, #383838 90%, #0000) 50% 100%;
+        no-repeat radial-gradient(circle closest-side, #383838 90%, #0000) 100% 50%;
     ;
-    background-size: calc(100% / 3) 100%;
-    animation: loading 1s linear infinite;
+    background-size: calc(100%/3) 100%;
+    animation: loading 1s infinite linear;
 }
+
+@keyframes loading {
+    33% { background-size: calc(100% / 3) 0%, calc(100%/3) 100%, calc(100%/3) 100%}
+    50% { background-size: calc(100% / 3) 100%, calc(100%/3) 0, calc(100%/3) 100%}
+    66% { background-size: calc(100% / 3) 100%, calc(100%/3) 100%, calc(100%/3) 0}
+}
+
+.bubble {
+    margin: 8px; 
+    padding: 8px;
+    font-size: 15px; 
+    border: none; 
+    color: #383838;
+    box-shadow: #959da533 0 8px 24px;
+    width: 80%; 
+    text-align: left;;
+}
+

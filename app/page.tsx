@@ -9,7 +9,12 @@ import PromptSuggestionRow from './components/PromptSuggestionRow'
 
 const Home = () => {
     const { append, isLoading, messages, input, handleInputChange, handleSubmit } = useChat()
-    const noMessages = true
+
+    const noMessages = false
+
+    const handlePrompt = () => {
+    }
+
     return (
         <main>
             <Image src={f1GPTLogo} width='250' alt='F1GPT Logo'/>
@@ -20,12 +25,13 @@ const Home = () => {
                             Ask me anything about volleyball ^^!
                         </p>
                         <br/>
-                        <PromptSuggestionRow/>
+                        <PromptSuggestionRow onPromptClick={handlePrompt}/>
                     </>
                 ): (
                     <> 
                         {/* {map messages onto text bubbles } */}
-                        { <LoadingBubble/>}
+                        { messages.map((message, index) => <Bubble key={'message-${index}'} message={message}/>) }
+                        { isLoading && <LoadingBubble/>}
                     </>
                 )}
                 

@@ -1,6 +1,6 @@
-const Bubble = () => {
+const Bubble = ({message}) => {
     return (
-        <></>
+        <div className="bubble"></div>
     )
 }
 
