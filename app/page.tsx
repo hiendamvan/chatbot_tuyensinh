@@ -1,6 +1,6 @@
 "use client"
 import Image from 'next/image'
-import f1GPTLogo from './assets/logo.avif'
+import f1GPTLogo from './assets/logo.png'
 import { useChat } from 'ai/react'
 import { Message } from 'ai'
 import Bubble from './components/Bubble'
@@ -23,7 +23,7 @@ const Home = () => {
 
     return (
         <main>
-            <Image src={f1GPTLogo} width='250' alt='F1GPT Logo'/>
+            <Image src={f1GPTLogo} width='250' alt='F1GPT Logo' className='logo'/>
             <section className={noMessages ? '': "populated"}>
                 {noMessages ? (
                     <>  

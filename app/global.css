@@ -10,12 +10,13 @@ body {
     align-items: center;
     height: 100vh;
     background-image: url("./assets/background.jpg");
+    background-size: cover;
 }
 
 main {
-    width: 80vw;
-    height: 80vh;
-    background: linear-gradient(to bottom, #f8f8f8, #cfcfcf);
+    width: 75vw;
+    height: 75vh;
+    background: linear-gradient(to bottom,#9bc9f7, #5590e9); 
     border-radius: 15px;
     display: flex;
     align-items: center;
@@ -28,6 +29,12 @@ main {
 
 section {
     width: 100%;
+}
+
+.logo{
+    width: 300px;
+    height: 150px;
+    margin-top: -30px;
 }
 
 section.populated {
@@ -66,7 +73,7 @@ input[type=submit] {
     font-size: 15px;
     border: none;
     color: #fff;
-    background-color: #411b8d;
+    background-color: #1458a7;
 }
 
 input:focus {
