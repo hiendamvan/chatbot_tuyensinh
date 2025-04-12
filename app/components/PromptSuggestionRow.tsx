@@ -12,7 +12,7 @@ const PromptSuggestionRow = ( {onPromptClick}) => {
                 <PromptSuggestionButton
                     key={'suggestion-${index}'} 
                     text={prompt}
-                    onClick = {onPromptClick}
+                    onClick = {() => onPromptClick(prompt)}
                 />)}
         </div>
     )

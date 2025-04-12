@@ -103,4 +103,32 @@ input:focus {
     width: 80%; 
     text-align: left;;
 }
+.bubble.user {
+    background-color: #E1F4FFFF;
+    border-radius: 20px 20px 0 20px;
+    margin-left: auto;
+}
+.bubble.assistant {
+    background-color: #dce7ffff;
+    border-radius: 20px 20px 20px 0;
+}
 
+.prompt-suggestion-button {
+    margin: 8px;
+    padding: 8px; 
+    font-size: 15px;
+    border: none;
+    background-color: #fff;
+    border-radius: 10px;
+    color: #383838;
+    box-shadow: #959da533 0 8px 24px;
+}
+
+.prompt-suggestion-button:hover {
+    background-color: #dce7ffff;
+    cursor: pointer;
+}
+
+.prompt-suggestion-row {
+    width: 100%;
+}

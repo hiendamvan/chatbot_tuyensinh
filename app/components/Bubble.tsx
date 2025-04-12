@@ -1,6 +1,7 @@
 const Bubble = ({message}) => {
+    const { content, role } = message
     return (
-        <div className="bubble"></div>
+        <div className="${role} bubble">{content}</div>
     )
 }
 

@@ -10,9 +10,15 @@ import PromptSuggestionRow from './components/PromptSuggestionRow'
 const Home = () => {
     const { append, isLoading, messages, input, handleInputChange, handleSubmit } = useChat()
 
-    const noMessages = false
+    const noMessages = ! messages || messages.length === 0
 
-    const handlePrompt = () => {
+    const handlePrompt = ( promptText) => {
+        const msg: Message = {
+            id: crypto.randomUUID(),
+            content: promptText,
+            role: 'user'
+        }
+        append(msg)
     }
 
     return (
@@ -29,7 +35,6 @@ const Home = () => {
                     </>
                 ): (
                     <> 
-                        {/* {map messages onto text bubbles } */}
                         { messages.map((message, index) => <Bubble key={'message-${index}'} message={message}/>) }
                         { isLoading && <LoadingBubble/>}
                     </>
