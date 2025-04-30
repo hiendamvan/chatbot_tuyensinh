@@ -22,10 +22,6 @@ if (
   throw new Error("Missing required environment variables");
 }
 
-const openrouter = createOpenRouter({
-  apiKey: OPEN_ROUTER_API_KEY,
-});
-
 const client = new DataAPIClient(ASTRA_DB_APPLICATION_TOKEN);
 const db = client.db(ASTRA_DB_API_ENDPOINT, { keyspace: ASTRA_DB_NAMESPACE });
 
