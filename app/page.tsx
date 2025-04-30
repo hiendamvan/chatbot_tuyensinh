@@ -8,10 +8,23 @@ import LoadingBubble from "./components/LoadingBubble";
 import PromptSuggestionRow from "./components/PromptSuggestionRow";
 import { useEffect, useRef, useState } from "react";
 
-const CHAT_HISTORY_KEY = "chat_history";
+// Define a type for our chat history
+type ChatHistory = {
+  id: string;
+  title: string;
+  messages: Message[];
+  createdAt: string;
+};
+
+const CHAT_HISTORY_KEY = "f1gpt_chat_histories";
+const ACTIVE_CHAT_KEY = "f1gpt_active_chat";
 
 const Home = () => {
   const [isClient, setIsClient] = useState(false);
+  const [chatHistories, setChatHistories] = useState<ChatHistory[]>([]);
+  const [activeChatId, setActiveChatId] = useState<string | null>(null);
+  const [showHistoryDropdown, setShowHistoryDropdown] = useState(false);
+
   const {
     append,
     status,
@@ -31,15 +44,47 @@ const Home = () => {
   // Handle client-side initialization
   useEffect(() => {
     setIsClient(true);
-    const savedMessages = localStorage.getItem(CHAT_HISTORY_KEY);
-    if (savedMessages) {
+
+    // Load chat histories
+    const savedHistories = localStorage.getItem(CHAT_HISTORY_KEY);
+    const savedActiveChatId = localStorage.getItem(ACTIVE_CHAT_KEY);
+
+    let histories: ChatHistory[] = [];
+    let activeChat: string | null = null;
+
+    if (savedHistories) {
       try {
-        const parsedMessages = JSON.parse(savedMessages);
-        setMessages(parsedMessages);
+        histories = JSON.parse(savedHistories);
+        setChatHistories(histories);
       } catch (e) {
-        console.error("Failed to parse saved messages:", e);
+        console.error("Failed to parse saved history:", e);
         localStorage.removeItem(CHAT_HISTORY_KEY);
       }
+    }
+
+    if (savedActiveChatId) {
+      activeChat = savedActiveChatId;
+      setActiveChatId(activeChat);
+
+      // Load active chat messages
+      const chat = histories.find((h) => h.id === activeChat);
+      if (chat) {
+        setMessages(chat.messages);
+      }
+    }
+
+    // If no active chat, create a new one
+    if (!activeChat && histories.length === 0) {
+      createNewChat();
+    } else if (!activeChat && histories.length > 0) {
+      // Set the most recent chat as active
+      const mostRecent = histories.sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      )[0];
+      setActiveChatId(mostRecent.id);
+      setMessages(mostRecent.messages);
+      localStorage.setItem(ACTIVE_CHAT_KEY, mostRecent.id);
     }
   }, []);
 
@@ -59,10 +104,82 @@ const Home = () => {
 
   // Save messages whenever they change
   useEffect(() => {
-    if (isClient && messages.length > 0) {
-      localStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(messages));
+    if (isClient && messages.length > 0 && activeChatId) {
+      // Update the current chat history
+      const updatedHistories = chatHistories.map((chat) => {
+        if (chat.id === activeChatId) {
+          // Update title if this is the first message
+          let title = chat.title;
+          if (chat.messages.length === 0 && messages.length > 0) {
+            // Use first few words of first message as title
+            title =
+              messages[0].content.split(" ").slice(0, 5).join(" ") + "...";
+          }
+          return {
+            ...chat,
+            messages: messages,
+            title: title,
+          };
+        }
+        return chat;
+      });
+
+      setChatHistories(updatedHistories);
+      localStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(updatedHistories));
     }
-  }, [messages, isClient]);
+  }, [messages, isClient, activeChatId]);
+
+  const createNewChat = () => {
+    const newChatId = crypto.randomUUID();
+    const newChat: ChatHistory = {
+      id: newChatId,
+      title: "New Chat",
+      messages: [],
+      createdAt: new Date().toISOString(),
+    };
+
+    const updatedHistories = [...chatHistories, newChat];
+    setChatHistories(updatedHistories);
+    setActiveChatId(newChatId);
+    setMessages([]);
+
+    localStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(updatedHistories));
+    localStorage.setItem(ACTIVE_CHAT_KEY, newChatId);
+    setShowHistoryDropdown(false);
+  };
+
+  const switchChat = (chatId: string) => {
+    const chat = chatHistories.find((h) => h.id === chatId);
+    if (chat) {
+      setActiveChatId(chatId);
+      setMessages(chat.messages);
+      localStorage.setItem(ACTIVE_CHAT_KEY, chatId);
+      setShowHistoryDropdown(false);
+    }
+  };
+
+  const deleteChat = (chatId: string, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent triggering switchChat
+
+    const updatedHistories = chatHistories.filter((chat) => chat.id !== chatId);
+    setChatHistories(updatedHistories);
+    localStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(updatedHistories));
+
+    // If we're deleting the active chat, switch to the most recent one
+    if (chatId === activeChatId) {
+      if (updatedHistories.length === 0) {
+        createNewChat();
+      } else {
+        const mostRecent = updatedHistories.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        )[0];
+        setActiveChatId(mostRecent.id);
+        setMessages(mostRecent.messages);
+        localStorage.setItem(ACTIVE_CHAT_KEY, mostRecent.id);
+      }
+    }
+  };
 
   const handlePrompt = (promptText: string) => {
     const msg: Message = {
@@ -73,14 +190,106 @@ const Home = () => {
     append(msg);
   };
 
-  const resetChat = () => {
-    setMessages([]);
-    localStorage.removeItem(CHAT_HISTORY_KEY);
+  const resetCurrentChat = () => {
+    if (activeChatId) {
+      const updatedHistories = chatHistories.map((chat) => {
+        if (chat.id === activeChatId) {
+          return {
+            ...chat,
+            messages: [],
+            title: "New Chat",
+          };
+        }
+        return chat;
+      });
+
+      setChatHistories(updatedHistories);
+      setMessages([]);
+      localStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(updatedHistories));
+    }
+  };
+
+  const getActiveChat = () => {
+    return chatHistories.find((chat) => chat.id === activeChatId);
   };
 
   return (
     <main>
       <header className="header">
+        {/* Chat history button */}
+        <button
+          className="history-button"
+          onClick={() => setShowHistoryDropdown(!showHistoryDropdown)}
+          title="Chat history"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            width="16"
+            height="16"
+          >
+            <path d="M5.566 4.657A4.505 4.505 0 016.75 4.5h10.5c.41 0 .806.055 1.183.157A3 3 0 0015.75 3h-7.5a3 3 0 00-2.684 1.657zM2.25 12a3 3 0 013-3h13.5a3 3 0 013 3v6a3 3 0 01-3 3H5.25a3 3 0 01-3-3v-6zM5.25 7.5c-.41 0-.806.055-1.184.157A3 3 0 016.75 6h10.5a3 3 0 012.683 1.657A4.505 4.505 0 0018.75 7.5H5.25z" />
+          </svg>
+          <span>Chats</span>
+        </button>
+
+        {/* Chat history dropdown */}
+        {showHistoryDropdown && (
+          <div className="history-dropdown">
+            <div className="history-dropdown-header">
+              <span>Chat History</span>
+            </div>
+            <button className="new-chat-button" onClick={createNewChat}>
+              New Chat
+            </button>
+            <div className="history-list">
+              {chatHistories.length === 0 ? (
+                <div className="history-item">No chat history</div>
+              ) : (
+                chatHistories
+                  .sort(
+                    (a, b) =>
+                      new Date(b.createdAt).getTime() -
+                      new Date(a.createdAt).getTime()
+                  )
+                  .map((chat) => (
+                    <div
+                      key={chat.id}
+                      className={`history-item ${
+                        chat.id === activeChatId ? "active" : ""
+                      }`}
+                      onClick={() => switchChat(chat.id)}
+                    >
+                      <div className="history-item-content">{chat.title}</div>
+                      <div className="history-item-actions">
+                        <button
+                          className="history-action-button"
+                          onClick={(e) => deleteChat(chat.id, e)}
+                          title="Delete chat"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                            width="16"
+                            height="16"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  ))
+              )}
+            </div>
+          </div>
+        )}
+
         <Image
           src={f1GPTLogo}
           width="200"
@@ -88,9 +297,10 @@ const Home = () => {
           alt="F1GPT Logo"
           className="logo"
         />
+
         {!noMessages && (
           <button
-            onClick={resetChat}
+            onClick={resetCurrentChat}
             className="clear-button"
             title="Clear chat history"
           >
@@ -113,7 +323,7 @@ const Home = () => {
         className={`chat-section ${noMessages ? "" : "populated"}`}
       >
         {noMessages ? (
-          <div className="p-4">
+          <div className="p-4" style={{ position: "relative", height: "100%" }}>
             <p className="starter-text">Ask me anything about volleyball ^^!</p>
             <PromptSuggestionRow onPromptClick={handlePrompt} />
           </div>
@@ -125,7 +335,9 @@ const Home = () => {
                   <Bubble content={message.content} role={message.role} />
                 </div>
               ))}
-              {status && <LoadingBubble />}
+              {status === "streaming" && messages.length > 0 && (
+                <LoadingBubble />
+              )}
             </div>
             <div ref={messagesEndRef} />
           </div>

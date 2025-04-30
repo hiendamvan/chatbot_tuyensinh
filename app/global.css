@@ -141,6 +141,11 @@ main {
   max-width: 500px;
   margin: 0 auto 1.5rem;
   line-height: 1.5;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
 }
 
 form {
@@ -386,6 +391,10 @@ input[type="submit"]:active {
   gap: 8px;
   justify-content: center;
   margin-top: 20px;
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  right: 0;
 }
 
 .prompt-suggestion-button {
@@ -515,4 +524,149 @@ input[type="submit"]:active {
 
 .hljs-link {
   text-decoration: underline;
+}
+
+/* Chat history management */
+.history-button {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  padding: 0.35rem;
+  color: rgba(255, 255, 255, 0.9);
+  border-radius: 6px;
+  transition: all 0.2s;
+  transform: scale(1);
+  border: none;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(4px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  z-index: 10;
+}
+
+.history-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+.history-button svg {
+  height: 1rem;
+  width: 1rem;
+}
+
+.history-dropdown {
+  position: absolute;
+  top: 3rem;
+  left: 0.75rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  width: 250px;
+  max-height: 400px;
+  overflow-y: auto;
+  z-index: 100;
+  transform-origin: top left;
+  animation: slideDown 0.2s ease-out forwards;
+}
+
+@keyframes slideDown {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.history-dropdown-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-color);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.history-list {
+  padding: 8px 0;
+}
+
+.history-item {
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--text-primary);
+  font-size: 0.85rem;
+}
+
+.history-item:hover {
+  background-color: #f1f5f9;
+}
+
+.history-item.active {
+  background-color: #eef2ff;
+  font-weight: 500;
+}
+
+.history-item-content {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 80%;
+  font-size: 0.85rem;
+}
+
+.history-item-actions {
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.history-item:hover .history-item-actions {
+  opacity: 1;
+}
+
+.history-action-button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 2px;
+  color: var(--text-secondary);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.history-action-button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: var(--text-primary);
+}
+
+.new-chat-button {
+  padding: 10px 16px;
+  margin: 8px;
+  width: calc(100% - 16px);
+  border: none;
+  background: var(--primary-gradient);
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: opacity 0.2s;
+}
+
+.new-chat-button:hover {
+  opacity: 0.9;
 }
