@@ -1,7 +1,7 @@
 import { DataAPIClient } from "@datastax/astra-db-ts";
-import { PuppeteerWebBaseLoader } from "langchain/document_loaders/web/puppeteer";
+import { PuppeteerWebBaseLoader } from "@langchain/community/document_loaders/web/puppeteer";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
-import { pipeline } from "@xenova/transformers";
+import { pipeline } from "@huggingface/transformers";
 import "dotenv/config";
 
 type SimilarityMetric = "dot_product" | "cosine" | "euclidean";
@@ -36,7 +36,9 @@ const splitter = new RecursiveCharacterTextSplitter({
   chunkOverlap: 100,
 });
 
-const createCollection = async (similarityMetric: SimilarityMetric = "dot_product") => {
+const createCollection = async (
+  similarityMetric: SimilarityMetric = "dot_product"
+) => {
   const res = await db.createCollection(ASTRA_DB_COLLECTION, {
     vector: {
       dimension: 384, // all-MiniLM-L6-v2 trả về vector 384 chiều
@@ -69,7 +71,10 @@ const loadSampleData = async () => {
   const collection = await db.collection(ASTRA_DB_COLLECTION);
 
   console.log("⏳ Loading embedding model...");
-  const generateEmbedding = await pipeline("feature-extraction", "Xenova/all-MiniLM-L6-v2");
+  const generateEmbedding = await pipeline(
+    "feature-extraction",
+    "Xenova/all-MiniLM-L6-v2"
+  );
 
   for await (const url of f1Data) {
     const content = await scrapePage(url);

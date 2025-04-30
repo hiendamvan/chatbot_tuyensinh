@@ -1,141 +1,145 @@
 * {
-    font-family: Verdana, Tahoma, sans-serif;
+  font-family: Verdana, Tahoma, sans-serif;
 }
 
 body {
-    margin: 0;
-    padding: 0;
-    display: flex; 
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-image: url("./assets/background.jpg");
-    background-size: cover;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-image: url("./assets/background.jpg");
+  background-size: cover;
 }
 
 main {
-    width: 75vw;
-    height: 75vh;
-    background: linear-gradient(to bottom,#9bc9f7, #5590e9); 
-    border-radius: 15px;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 20px;
-    text-align: center;
-    color: #383838;
+  width: 75vw;
+  height: 75vh;
+  background: linear-gradient(to bottom, #9bc9f7, #5590e9);
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+  text-align: center;
+  color: #383838;
 }
 
 section {
-    width: 100%;
+  width: 100%;
 }
 
-.logo{
-    width: 300px;
-    height: 150px;
-    margin-top: -30px;
+.logo {
+  width: 300px;
+  height: 150px;
+  margin-top: -30px;
 }
 
 section.populated {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    /* overflow: scroll; */
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  /* overflow: scroll; */
 }
 
 .starter-text {
-    padding: 0 80px;
+  padding: 0 80px;
 }
 
 form {
-    height: 50px;
-    width: 100%;
-    display: flex;
-    border-top: #828282 solid 2px;
-    padding-top: 20px;
-    border-radius: 0 0 10px 10px;
-    overflow: hidden;
+  height: 50px;
+  width: 100%;
+  display: flex;
+  border-top: #828282 solid 2px;
+  padding-top: 20px;
+  border-radius: 0 0 10px 10px;
+  overflow: hidden;
 }
 
 input.question-box {
-    width: 85%;
-    padding: 10px;
-    font-size: 15px;
-    color: #383838;
-    border: none;
+  width: 85%;
+  padding: 10px;
+  font-size: 15px;
+  color: #383838;
+  border: none;
 }
 
-input[type=submit] {
-    width: 15%;
-    padding: 10px;
-    font-size: 15px;
-    border: none;
-    color: #fff;
-    background-color: #1458a7;
+input[type="submit"] {
+  width: 15%;
+  padding: 10px;
+  font-size: 15px;
+  border: none;
+  color: #fff;
+  background-color: #1458a7;
 }
 
 input:focus {
-    outline: none;
+  outline: none;
 }
 
-
 .loader {
-    margin: 10px; 
-    width: 60px; 
-    aspect-ratio: 4;
-    background: 
-        no-repeat radial-gradient(circle closest-side, #383838 90%, #0000) 0 50%, 
-        no-repeat radial-gradient(circle closest-side, #383838 90%, #0000) 50% 50%,
-        no-repeat radial-gradient(circle closest-side, #383838 90%, #0000) 100% 50%;
-    ;
-    background-size: calc(100%/3) 100%;
-    animation: loading 1s infinite linear;
+  margin: 10px;
+  width: 60px;
+  aspect-ratio: 4;
+  background: no-repeat radial-gradient(circle closest-side, #383838 90%, #0000)
+      0 50%,
+    no-repeat radial-gradient(circle closest-side, #383838 90%, #0000) 50% 50%,
+    no-repeat radial-gradient(circle closest-side, #383838 90%, #0000) 100% 50%;
+  background-size: calc(100% / 3) 100%;
+  animation: loading 1s infinite linear;
 }
 
 @keyframes loading {
-    33% { background-size: calc(100% / 3) 0%, calc(100%/3) 100%, calc(100%/3) 100%}
-    50% { background-size: calc(100% / 3) 100%, calc(100%/3) 0, calc(100%/3) 100%}
-    66% { background-size: calc(100% / 3) 100%, calc(100%/3) 100%, calc(100%/3) 0}
+  33% {
+    background-size: calc(100% / 3) 0%, calc(100% / 3) 100%, calc(100% / 3) 100%;
+  }
+  50% {
+    background-size: calc(100% / 3) 100%, calc(100% / 3) 0, calc(100% / 3) 100%;
+  }
+  66% {
+    background-size: calc(100% / 3) 100%, calc(100% / 3) 100%, calc(100% / 3) 0;
+  }
 }
 
 .bubble {
-    margin: 8px; 
-    padding: 8px;
-    font-size: 15px; 
-    border: none; 
-    color: #383838;
-    box-shadow: #959da533 0 8px 24px;
-    width: 80%; 
-    text-align: left;;
+  margin: 8px;
+  padding: 8px;
+  font-size: 15px;
+  border: none;
+  color: #383838;
+  box-shadow: #959da533 0 8px 24px;
+  width: 80%;
+  text-align: left;
 }
 .bubble.user {
-    background-color: #E1F4FFFF;
-    border-radius: 20px 20px 0 20px;
-    margin-left: auto;
+  background-color: #e1f4ffff;
+  border-radius: 20px 20px 0 20px;
+  margin-left: auto;
 }
 .bubble.assistant {
-    background-color: #dce7ffff;
-    border-radius: 20px 20px 20px 0;
+  background-color: #dce7ffff;
+  border-radius: 20px 20px 20px 0;
 }
 
 .prompt-suggestion-button {
-    margin: 8px;
-    padding: 8px; 
-    font-size: 15px;
-    border: none;
-    background-color: #fff;
-    border-radius: 10px;
-    color: #383838;
-    box-shadow: #959da533 0 8px 24px;
+  margin: 8px;
+  padding: 8px;
+  font-size: 15px;
+  border: none;
+  background-color: #fff;
+  border-radius: 10px;
+  color: #383838;
+  box-shadow: #959da533 0 8px 24px;
 }
 
 .prompt-suggestion-button:hover {
-    background-color: #dce7ffff;
-    cursor: pointer;
+  background-color: #dce7ffff;
+  cursor: pointer;
 }
 
 .prompt-suggestion-row {
-    width: 100%;
+  width: 100%;
 }
