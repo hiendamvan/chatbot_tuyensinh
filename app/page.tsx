@@ -79,16 +79,15 @@ const Home = () => {
   };
 
   return (
-    <main className="flex flex-col h-screen">
-      <div className="relative">
-        <div className="p-4 flex justify-center">
-          <Image
-            src={f1GPTLogo}
-            width="250"
-            alt="F1GPT Logo"
-            className="logo"
-          />
-        </div>
+    <main>
+      <header className="header">
+        <Image
+          src={f1GPTLogo}
+          width="200"
+          height="70"
+          alt="F1GPT Logo"
+          className="logo"
+        />
         {!noMessages && (
           <button
             onClick={resetChat}
@@ -108,7 +107,7 @@ const Home = () => {
             </svg>
           </button>
         )}
-      </div>
+      </header>
       <section
         ref={chatContainerRef}
         className={`chat-section ${noMessages ? "" : "populated"}`}
@@ -116,7 +115,6 @@ const Home = () => {
         {noMessages ? (
           <div className="p-4">
             <p className="starter-text">Ask me anything about volleyball ^^!</p>
-            <br />
             <PromptSuggestionRow onPromptClick={handlePrompt} />
           </div>
         ) : (
@@ -133,14 +131,14 @@ const Home = () => {
           </div>
         )}
       </section>
-      <form onSubmit={handleSubmit} className="p-4 border-t">
+      <form onSubmit={handleSubmit}>
         <input
-          className="question-box w-full"
+          className="question-box"
           onChange={handleInputChange}
           value={input}
-          placeholder="Ask me something ..."
+          placeholder="Ask me something..."
         />
-        <input type="submit" />
+        <input type="submit" value="Send" />
       </form>
     </main>
   );
