@@ -25,6 +25,7 @@ const Home = () => {
   });
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
   const noMessages = !messages || messages.length === 0;
 
   // Handle client-side initialization
@@ -42,8 +43,12 @@ const Home = () => {
     }
   }, []);
 
+  // Improved scroll function
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
+    }
   };
 
   // Scroll when messages or loading state changes
@@ -87,37 +92,11 @@ const Home = () => {
         {!noMessages && (
           <button
             onClick={resetChat}
-            style={{
-              background: "linear-gradient(to right, #6366f1, #a855f7)",
-              boxShadow:
-                "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
-              position: "absolute",
-              top: "1rem",
-              right: "1rem",
-              padding: "0.5rem",
-              color: "white",
-              borderRadius: "9999px",
-              transition: "all 0.2s",
-              transform: "scale(1)",
-              border: "none",
-              cursor: "pointer",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.opacity = "0.9";
-              e.currentTarget.style.transform = "scale(1.05)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.opacity = "1";
-              e.currentTarget.style.transform = "scale(1)";
-            }}
+            className="clear-button"
             title="Clear chat history"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              style={{
-                height: "1rem",
-                width: "1rem",
-              }}
               viewBox="0 0 20 20"
               fill="currentColor"
             >
@@ -131,53 +110,9 @@ const Home = () => {
         )}
       </div>
       <section
-        style={{
-          flex: 1,
-          overflowY: "auto",
-          scrollbarWidth: "thin",
-          scrollbarColor: "#4F46E5 transparent",
-          position: "relative",
-          border: "1px solid #E2E8F0",
-          borderRadius: "8px",
-          margin: "0 16px",
-          maxHeight: "calc(100vh - 200px)",
-          minHeight: "300px",
-          height: "100%",
-          paddingRight: "4px",
-        }}
-        className={noMessages ? "" : "populated"}
-        onScroll={(e) => {
-          console.log("Scrolling", e.currentTarget.scrollTop);
-        }}
+        ref={chatContainerRef}
+        className={`chat-section ${noMessages ? "" : "populated"}`}
       >
-        <style jsx global>{`
-          /* For Webkit browsers like Chrome and Safari */
-          ::-webkit-scrollbar {
-            width: 12px;
-            height: 12px;
-          }
-
-          ::-webkit-scrollbar-track {
-            background: #f1f5f9;
-            border-radius: 10px;
-          }
-
-          ::-webkit-scrollbar-thumb {
-            background-color: #6366f1;
-            border-radius: 10px;
-            border: 3px solid #f1f5f9;
-          }
-
-          ::-webkit-scrollbar-thumb:hover {
-            background-color: #4f46e5;
-          }
-
-          /* For Firefox */
-          * {
-            scrollbar-width: thin;
-            scrollbar-color: #6366f1 #f1f5f9;
-          }
-        `}</style>
         {noMessages ? (
           <div className="p-4">
             <p className="starter-text">Ask me anything about volleyball ^^!</p>
@@ -185,29 +120,16 @@ const Home = () => {
             <PromptSuggestionRow onPromptClick={handlePrompt} />
           </div>
         ) : (
-          <div
-            className="p-4"
-            style={{
-              minHeight: "100%",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            <div style={{ flexGrow: 1 }}>
+          <div className="messages-container">
+            <div>
               {messages.map((message, index) => (
-                <div
-                  key={`message-${index}`}
-                  style={{
-                    marginBottom: "16px",
-                    wordBreak: "break-word",
-                  }}
-                >
+                <div key={`message-${index}`} className="message-wrapper">
                   <Bubble message={message} />
                 </div>
               ))}
               {status && <LoadingBubble />}
             </div>
-            <div ref={messagesEndRef} style={{ height: "1px" }} />
+            <div ref={messagesEndRef} />
           </div>
         )}
       </section>
