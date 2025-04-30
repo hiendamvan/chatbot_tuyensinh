@@ -122,7 +122,7 @@ const Home = () => {
             <div>
               {messages.map((message, index) => (
                 <div key={`message-${index}`} className="message-wrapper">
-                  <Bubble message={message} />
+                  <Bubble content={message.content} role={message.role} />
                 </div>
               ))}
               {status && <LoadingBubble />}

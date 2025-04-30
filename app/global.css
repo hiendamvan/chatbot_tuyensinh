@@ -232,6 +232,7 @@ input[type="submit"]:active {
   }
 }
 
+/* Markdown styling */
 .bubble {
   padding: 12px 16px;
   font-size: 15px;
@@ -256,6 +257,127 @@ input[type="submit"]:active {
   border-bottom-left-radius: 4px;
   margin-right: auto;
   border-left: 3px solid #e2e8f0;
+}
+
+/* Markdown styles */
+.bubble h1 {
+  font-size: 1.5em;
+  margin: 0.67em 0;
+  font-weight: bold;
+}
+
+.bubble h2 {
+  font-size: 1.3em;
+  margin: 0.83em 0;
+  font-weight: bold;
+}
+
+.bubble h3 {
+  font-size: 1.1em;
+  margin: 1em 0;
+  font-weight: bold;
+}
+
+.bubble h4,
+.bubble h5,
+.bubble h6 {
+  font-size: 1em;
+  margin: 1.33em 0;
+  font-weight: bold;
+}
+
+.bubble ul,
+.bubble ol {
+  padding-left: 1.5em;
+  margin: 1em 0;
+}
+
+.bubble li {
+  margin-bottom: 0.5em;
+}
+
+.bubble p {
+  margin: 1em 0;
+}
+
+.bubble p:first-child {
+  margin-top: 0;
+}
+
+.bubble p:last-child {
+  margin-bottom: 0;
+}
+
+.bubble a {
+  color: #4f46e5;
+  text-decoration: none;
+  border-bottom: 1px solid #c7d2fe;
+  transition: border-color 0.2s;
+}
+
+.bubble a:hover {
+  border-color: #4f46e5;
+}
+
+.bubble code {
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  font-family: monospace;
+  font-size: 0.9em;
+}
+
+.bubble pre {
+  background-color: #282c34;
+  color: #abb2bf;
+  padding: 0.75em 1em;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 1em 0;
+}
+
+.bubble pre code {
+  background-color: transparent;
+  padding: 0;
+  font-size: 0.9em;
+  color: inherit;
+  white-space: pre;
+}
+
+.bubble blockquote {
+  margin: 1em 0;
+  padding-left: 1em;
+  border-left: 4px solid #e2e8f0;
+  color: var(--text-secondary);
+}
+
+.bubble img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  margin: 1em 0;
+}
+
+.bubble table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+}
+
+.bubble th,
+.bubble td {
+  padding: 8px 12px;
+  border: 1px solid #e2e8f0;
+  text-align: left;
+}
+
+.bubble th {
+  background-color: #f8fafc;
+  font-weight: 600;
+}
+
+.bubble tr:nth-child(even) {
+  background-color: #f8fafc;
 }
 
 .prompt-suggestion-row {
@@ -315,4 +437,82 @@ input[type="submit"]:active {
 * {
   scrollbar-width: thin;
   scrollbar-color: rgba(99, 102, 241, 0.5) rgba(241, 245, 249, 0.7);
+}
+
+/* Add syntax highlighting styles */
+.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 0.5em;
+  color: #abb2bf;
+  background: #282c34;
+}
+
+.hljs-comment,
+.hljs-quote {
+  color: #5c6370;
+  font-style: italic;
+}
+
+.hljs-doctag,
+.hljs-keyword,
+.hljs-formula {
+  color: #c678dd;
+}
+
+.hljs-section,
+.hljs-name,
+.hljs-selector-tag,
+.hljs-deletion,
+.hljs-subst {
+  color: #e06c75;
+}
+
+.hljs-literal {
+  color: #56b6c2;
+}
+
+.hljs-string,
+.hljs-regexp,
+.hljs-addition,
+.hljs-attribute,
+.hljs-meta-string {
+  color: #98c379;
+}
+
+.hljs-built_in,
+.hljs-class .hljs-title {
+  color: #e6c07b;
+}
+
+.hljs-attr,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-type,
+.hljs-selector-class,
+.hljs-selector-attr,
+.hljs-selector-pseudo,
+.hljs-number {
+  color: #d19a66;
+}
+
+.hljs-symbol,
+.hljs-bullet,
+.hljs-link,
+.hljs-meta,
+.hljs-selector-id,
+.hljs-title {
+  color: #61aeee;
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: bold;
+}
+
+.hljs-link {
+  text-decoration: underline;
 }
