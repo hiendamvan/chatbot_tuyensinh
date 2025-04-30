@@ -7,6 +7,7 @@ import Bubble from "./components/Bubble";
 import LoadingBubble from "./components/LoadingBubble";
 import PromptSuggestionRow from "./components/PromptSuggestionRow";
 import { useEffect, useRef, useState } from "react";
+import Settings from "./components/Settings";
 
 // Define a type for our chat history
 type ChatHistory = {
@@ -16,14 +17,22 @@ type ChatHistory = {
   createdAt: string;
 };
 
+// Define constants
 const CHAT_HISTORY_KEY = "f1gpt_chat_histories";
 const ACTIVE_CHAT_KEY = "f1gpt_active_chat";
+const OPENROUTER_KEY_STORAGE = "f1gpt_openrouter_key";
+const OPENROUTER_MODEL_STORAGE = "f1gpt_openrouter_model";
 
 const Home = () => {
   const [isClient, setIsClient] = useState(false);
   const [chatHistories, setChatHistories] = useState<ChatHistory[]>([]);
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
   const [showHistoryDropdown, setShowHistoryDropdown] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+
+  // Get the API key and model for OpenRouter
+  const [openRouterKey, setOpenRouterKey] = useState<string | null>(null);
+  const [openRouterModel, setOpenRouterModel] = useState<string | null>(null);
 
   const {
     append,
@@ -31,11 +40,39 @@ const Home = () => {
     messages,
     input,
     handleInputChange,
-    handleSubmit,
+    handleSubmit: originalHandleSubmit,
     setMessages,
   } = useChat({
-    initialMessages: [],
+    body: {
+      openRouterKey: openRouterKey || undefined,
+      openRouterModel: openRouterModel || undefined,
+    },
   });
+
+  // Custom submit handler that includes the API key and model
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const apiKey = localStorage.getItem(OPENROUTER_KEY_STORAGE) || undefined;
+    const model = localStorage.getItem(OPENROUTER_MODEL_STORAGE) || undefined;
+
+    originalHandleSubmit(e, {
+      body: {
+        openRouterKey: apiKey,
+        openRouterModel: model,
+      },
+    });
+  };
+
+  // Load the API key and model from localStorage
+  useEffect(() => {
+    if (isClient) {
+      const apiKey = localStorage.getItem(OPENROUTER_KEY_STORAGE) || null;
+      const model = localStorage.getItem(OPENROUTER_MODEL_STORAGE) || null;
+
+      setOpenRouterKey(apiKey);
+      setOpenRouterModel(model);
+    }
+  }, [isClient, showSettings]);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
@@ -298,6 +335,27 @@ const Home = () => {
           className="logo"
         />
 
+        {/* Settings button */}
+        <button
+          className="settings-button"
+          onClick={() => setShowSettings(true)}
+          title="Settings"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            width="16"
+            height="16"
+          >
+            <path
+              fillRule="evenodd"
+              d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
+              clipRule="evenodd"
+            />
+          </svg>
+        </button>
+
         {!noMessages && (
           <button
             onClick={resetCurrentChat}
@@ -335,9 +393,8 @@ const Home = () => {
                   <Bubble content={message.content} role={message.role} />
                 </div>
               ))}
-              {status === "streaming" && messages.length > 0 && (
-                <LoadingBubble />
-              )}
+              {(status === "streaming" || status === "submitted") &&
+                messages.length > 0 && <LoadingBubble />}
             </div>
             <div ref={messagesEndRef} />
           </div>
@@ -352,6 +409,9 @@ const Home = () => {
         />
         <input type="submit" value="Send" />
       </form>
+
+      {/* Settings Modal */}
+      <Settings isOpen={showSettings} onClose={() => setShowSettings(false)} />
     </main>
   );
 };

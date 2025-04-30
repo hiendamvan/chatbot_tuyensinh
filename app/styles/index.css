@@ -1,0 +1,8 @@
+/* Import all the CSS files */
+@import "./base.css";
+@import "./chat.css";
+@import "./bubble.css";
+@import "./prompt-suggestions.css";
+@import "./settings.css";
+@import "./chat-history.css";
+@import "./syntax-highlighting.css";

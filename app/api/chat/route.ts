@@ -43,7 +43,7 @@ async function getEmbeddingPipeline() {
 
 export async function POST(req: Request) {
   try {
-    const { messages } = await req.json();
+    const { messages, openRouterKey, openRouterModel } = await req.json();
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
       return new Response("Invalid messages format", {
         status: StatusCodes.BAD_REQUEST,
@@ -56,6 +56,17 @@ export async function POST(req: Request) {
         status: StatusCodes.BAD_REQUEST,
       });
     }
+
+    // Use custom API key if provided, otherwise use environment variable
+    const apiKey = openRouterKey || OPEN_ROUTER_API_KEY;
+
+    // Use the selected model or default to gpt-4o-mini
+    const model = openRouterModel || "gpt-4o-mini";
+
+    // Create a new openrouter instance with the provided key
+    const customOpenRouter = createOpenRouter({
+      apiKey,
+    });
 
     let docContext = "";
 
@@ -102,7 +113,7 @@ export async function POST(req: Request) {
       };
 
       const response = streamText({
-        model: openrouter("gpt-4o-mini"),
+        model: customOpenRouter(model),
         messages: [template, ...messages],
         temperature: 0.7,
         maxTokens: 512,
