@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "seed": "ts-node ./scripts/loadDb.ts",
+    "seedpdf": "ts-node ./scripts/loadDb_from_pdf.ts",
     "graph": "ts-node ./scripts/loadDb_graph.ts",
     "lint": "next lint"
   },
