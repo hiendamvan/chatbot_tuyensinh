@@ -26,7 +26,7 @@ if (
 }
 
 // 2. File đầu vào (có thể là .txt hoặc .pdf)
-const listFiles = ["data/tuyensinh.txt"];
+const listFiles = ["scripts/text_preprocessing/tuyensinh_clean.txt"];
 
 // 3. Kết nối Astra DB
 const client = new DataAPIClient(ASTRA_DB_APPLICATION_TOKEN);
@@ -77,8 +77,9 @@ const loadSampleData = async () => {
   console.log("⏳ Loading embedding model...");
   const generateEmbedding = await pipeline(
     "feature-extraction",
-    "Xenova/paraphrase-multilingual-MiniLM-L12-v2" // ✅ Mô hình tiếng Việt tốt hơn
+    "intfloat/multilingual-e5-small"
   );
+  
 
   for await (const filePath of listFiles) {
     const content = await readFileContent(filePath);
