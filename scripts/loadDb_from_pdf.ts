@@ -79,7 +79,6 @@ const loadSampleData = async () => {
     "feature-extraction",
     "intfloat/multilingual-e5-small"
   );
-  
 
   for await (const filePath of listFiles) {
     const content = await readFileContent(filePath);
