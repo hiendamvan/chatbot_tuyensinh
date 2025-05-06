@@ -1,8 +1,8 @@
 import "./styles/index.css";
 
 export const metadata = {
-  title: "F1GPT",
-  description: "Ask me anything about volleyball!",
+  title: "Tư vấn tuyển sinh UET",
+  description: "Ask me anything about University of Engineering and Technology, VietNam National University HaNoi",
 };
 
 const RootLayout = ({ children }) => {
