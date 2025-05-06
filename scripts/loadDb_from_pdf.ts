@@ -26,7 +26,7 @@ if (
 }
 
 // 2. File đầu vào (có thể là .txt hoặc .pdf)
-const listFiles = ["scripts/text_preprocessing/tuyensinh_clean.txt"];
+const listFiles = ["scripts/data/tuyensinh_clean.txt"];
 
 // 3. Kết nối Astra DB
 const client = new DataAPIClient(ASTRA_DB_APPLICATION_TOKEN);

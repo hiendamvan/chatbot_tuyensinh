@@ -26,13 +26,13 @@ def joining(tokens):
 
 # remove VietNamese accent 
 def main():
-    with open("scripts/text_preprocessing/tuyensinh.txt", "r", encoding="utf-8") as f:
+    with open("scripts/data/tuyensinh.txt", "r", encoding="utf-8") as f:
         content = f.read()
     text = cleaning_text(content)
     text = tokenizing(text)
     text = text.lower()
     # text = joining(text)
-    with open("scripts/text_preprocessing/tuyensinh_clean.txt", "w", encoding="utf-8") as f:
+    with open("scripts/data/tuyensinh_clean.txt", "w", encoding="utf-8") as f:
         f.write(text)
 
 main()
