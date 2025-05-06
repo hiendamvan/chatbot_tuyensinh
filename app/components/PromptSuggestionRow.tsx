@@ -2,9 +2,9 @@ import PromptSuggestionButton from "./PromptSuggestionButton";
 
 const PromptSuggestionRow = ({ onPromptClick }) => {
   const prompts = [
-    "What is the latest MVP of Olympic Volleyball Women?",
-    "Which country will host the next Women Volleyball World Championship?",
-    "What are the schedule for all the matches today?",
+    "Trường Đại học Công nghệ có các địa chỉ học tập nào?",
+    "Trường Đại học Công nghệ, Đại học Quốc gia Hà Nội có trụ sở chính ở đâu?",
+    "Giới thiệu ngành Khoa học máy tinh tại trường Đại học Công nghệ?",
   ];
   return (
     <div className="prompt-suggestion-row">

@@ -28,7 +28,7 @@ const ChatMessages = ({
     >
       {noMessages ? (
         <div className="p-4" style={{ position: "relative", height: "100%" }}>
-          <p className="starter-text">Ask me anything about volleyball ^^!</p>
+          <p className="starter-text">Ask me anything about UET</p>
           <PromptSuggestionRow onPromptClick={handlePrompt} />
         </div>
       ) : (
