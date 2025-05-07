@@ -3,6 +3,28 @@ import { pipeline } from "@huggingface/transformers";
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { streamText } from "ai";
 import { StatusCodes } from "http-status-codes";
+import { BM25Retriever } from "@langchain/community/retrievers/bm25";
+import { EnsembleRetriever } from "langchain/retrievers/ensemble";
+import fs from "fs";
+import pdfParse from "pdf-parse";
+import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
+
+const data = fs.readFileSync(
+  "D:/giao trinh dai hoc/KI 6/Du an/f1gpt_chatbot/scripts/data/tuyensinh_clean.txt",
+  "utf8"
+);
+
+const splitter = new RecursiveCharacterTextSplitter({
+  chunkSize: 512,
+  chunkOverlap: 100,
+});
+
+const chunks = await splitter.splitText(data);
+
+const documents = chunks.map((chunk) => ({
+  pageContent: chunk,
+  metadata: {},
+}));
 
 const {
   ASTRA_DB_NAMESPACE,
@@ -31,7 +53,7 @@ async function getEmbeddingPipeline() {
   if (!generateEmbedding) {
     generateEmbedding = await pipeline(
       "feature-extraction",
-      "Xenova/all-MiniLM-L6-v2"
+      "intfloat/multilingual-e5-small"
     );
   }
   return generateEmbedding;
@@ -66,16 +88,19 @@ export async function POST(req: Request) {
 
     let docContext = "";
 
+    // keywords search: BM25
+    const keywordsRetriever = BM25Retriever.fromDocuments(documents, { k: 2 });
+
     // embedding
-    const pipe = await getEmbeddingPipeline();
-    const output = await pipe(latestMessage, {
+    const vectorRetriever = await getEmbeddingPipeline();
+    const output = await vectorRetriever(latestMessage, {
       pooling: "mean",
       normalize: true,
     });
 
     const vector: number[] = Array.from(output.data); // Convert from TypedArray to number[]
 
-    // find similar in db
+    // vectorRetriever: find similar in db
     try {
       const collection = await db.collection(ASTRA_DB_COLLECTION);
 
@@ -83,11 +108,19 @@ export async function POST(req: Request) {
         sort: {
           $vector: vector,
         },
-        limit: 5,
+        limit: 3,
       });
+
       const documents = await cursor.toArray();
       const docsMap = documents?.map((doc) => doc.text);
-      docContext = JSON.stringify(docsMap);
+      const vectorContext = JSON.stringify(docsMap);
+
+      // keywordsRetriever
+      const docKeywords = await keywordsRetriever.invoke(latestMessage);
+      const bm25Context = docKeywords.map((doc) => doc.pageContent).join("\n");
+
+      // Conbine vector Retriever with keywords Retriever
+      const docContext = `${bm25Context}\n\n${vectorContext}`;
 
       const template = {
         role: "system",
