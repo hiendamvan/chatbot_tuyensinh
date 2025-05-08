@@ -8,7 +8,9 @@ import { EnsembleRetriever } from "langchain/retrievers/ensemble";
 import fs from "fs";
 import pdfParse from "pdf-parse";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
+import { CohereRerank } from "@langchain/cohere"
 
+// TODO: reranking, add more data 
 const data = fs.readFileSync(
   "D:/giao trinh dai hoc/KI 6/Du an/f1gpt_chatbot/scripts/data/tuyensinh_clean.txt",
   "utf8"
@@ -86,10 +88,8 @@ export async function POST(req: Request) {
       apiKey,
     });
 
-    let docContext = "";
-
     // keywords search: BM25
-    const keywordsRetriever = BM25Retriever.fromDocuments(documents, { k: 2 });
+    const keywordsRetriever = BM25Retriever.fromDocuments(documents, { k: 5 });
 
     // embedding
     const vectorRetriever = await getEmbeddingPipeline();
@@ -108,7 +108,7 @@ export async function POST(req: Request) {
         sort: {
           $vector: vector,
         },
-        limit: 3,
+        limit: 5,
       });
 
       const documents = await cursor.toArray();
@@ -119,9 +119,24 @@ export async function POST(req: Request) {
       const docKeywords = await keywordsRetriever.invoke(latestMessage);
       const bm25Context = docKeywords.map((doc) => doc.pageContent).join("\n");
 
-      // Conbine vector Retriever with keywords Retriever
-      const docContext = `${bm25Context}\n\n${vectorContext}`;
+      const documentsForRerank = [
+        ...bm25Context.split("\n"),
+        ...JSON.parse(vectorContext)
+      ];
 
+      //TODO: reranking
+      const cohereRerank = new CohereRerank({
+        apiKey: process.env.COHERE_API_KEY, 
+        model: 'rerank-v3.5',
+      })
+
+      const rerankedDocument = await cohereRerank.rerank(documentsForRerank, latestMessage,{
+          topN:5
+      })
+
+      const indexes = rerankedDocument.map(item=>item.index)
+      const docContext = indexes.map(index=> documentsForRerank[index])
+      console.log(docContext)
       const template = {
         role: "system",
         content: `
